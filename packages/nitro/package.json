@@ -1,0 +1,33 @@
+{
+  "name": "@nitro-loki/core",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Core Loki logging primitives — logger, transport, redaction, batching",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nitro-loki/core": "workspace:*"
+  },
+  "devDependencies": {
+    "nitro": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "nitro": ">=2.10"
+  }
+}

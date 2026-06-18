@@ -1,0 +1,36 @@
+{
+  "name": "@nitro-loki/nuxt",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Nuxt module for nitro-loki — drop-in Loki logging for your Nuxt server",
+  "main": "./dist/module.js",
+  "module": "./dist/module.mjs",
+  "types": "./dist/module.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.js",
+      "types": "./dist/module.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nitro-loki/core": "workspace:*",
+    "@nitro-loki/nitro": "workspace:*"
+  },
+  "devDependencies": {
+    "@nuxt/kit": "catalog:",
+    "@nuxt/schema": "catalog:",
+    "nuxt": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "nuxt": ">=3.12"
+  }
+}

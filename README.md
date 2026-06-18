@@ -1,4 +1,4 @@
-# uloki
+# 🐍 Uloki - Universal Loki Log Adapter
 
 > Loki logging transport for [Nitro](https://nitro.unjs.io) — the server engine that powers [Nuxt](https://nuxt.com).
 

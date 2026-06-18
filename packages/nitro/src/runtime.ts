@@ -1,12 +1,13 @@
-import type { NitroApp } from "nitro/types";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { LokiLogger, type LokiLogEntry } from "@nitro-loki/core";
-import { resolveConfig, type NitroLokiConfig } from "./config";
+import { resolveConfig } from "./config";
+import type { NitroLokiConfig } from "./types";
 
 /**
  * Nitro runtime: hooks into the Nitro app lifecycle.
  * Called once at server start to register hooks and wire LokiTransport.
  */
-export function useLokiRuntime(nitroApp: NitroApp, config: NitroLokiConfig) {
+export function useLokiRuntime(nitroApp: any, config: NitroLokiConfig) {
   const resolved = resolveConfig(config);
   const logger = new LokiLogger({
     endpoint: resolved.endpoint,
@@ -18,11 +19,11 @@ export function useLokiRuntime(nitroApp: NitroApp, config: NitroLokiConfig) {
   });
 
   // Hook into request lifecycle
-  nitroApp.hooks.hook("request", (event) => {
+  nitroApp.hooks.hook("request", (event: any) => {
     // Tag every request context with logger
     event.context.loki = {
-      log: (entry: Partial<LokiLogEntry>) =>
-        logger.log({ ...entry, labels: { ...resolved.labels, ...entry.labels } }),
+      log: (entry: Partial<LokiLogEntry> & { line?: string }) =>
+        logger.log({ ...entry, labels: { ...resolved.labels, ...entry.labels }, line: entry.line ?? "" }),
       flush: () => logger.flush(),
     };
   });

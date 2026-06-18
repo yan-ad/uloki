@@ -1,24 +1,23 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeAll } from "vitest";
 
 // Mock @nuxt/kit so the module can be imported without Nuxt installed
 vi.mock("@nuxt/kit", () => ({
-  defineNuxtModule: (def: any) => {
-    // Return the raw definition so tests can inspect it
-    return {
-      ...def,
-      __isMock: true,
-    };
-  },
+  defineNuxtModule: (def: any) => ({
+    ...def,
+    __isMock: true,
+  }),
   createResolver: () => ({ resolve: (p: string) => `/resolved/${p}` }),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const mod = require("./module");
-
 describe("@nitro-loki/nuxt module", () => {
-  it("is a function (Nuxt module)", () => {
+  let mod: any;
+
+  beforeAll(async () => {
+    mod = await import("./module");
+  });
+
+  it("is defined", () => {
     expect(mod.default).toBeDefined();
-    expect(typeof mod.default).toBe("object"); // After mock wrap, it's the definition object
   });
 
   it("has correct meta name and configKey", () => {

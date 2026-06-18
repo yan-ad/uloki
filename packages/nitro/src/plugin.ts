@@ -1,5 +1,6 @@
-import type { Nitro } from "nitro/types";
-import { resolveConfig, type NitroLokiConfig } from "./config";
+import { useLokiRuntime } from "./runtime";
+import { resolveConfig } from "./config";
+import type { NitroLokiConfig } from "./types";
 
 /**
  * Nitro build-level plugin.
@@ -12,7 +13,7 @@ export function nitroLokiPlugin(userConfig: NitroLokiConfig = {}) {
     name: "nitro-loki",
     config: config,
 
-    async init(nitro: Nitro) {
+    async init(nitro: any) {
       nitro.options.alias = nitro.options.alias ?? {};
       // Expose resolved config as virtual module so runtime can import it
       nitro.options.virtual = nitro.options.virtual ?? {};

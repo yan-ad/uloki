@@ -1,3 +1,4 @@
+// @ts-nocheck — types resolve only in Nuxt project context
 import { defineNuxtModule, createResolver } from "@nuxt/kit";
 import type { NitroLokiConfig } from "@nitro-loki/nitro";
 
@@ -21,7 +22,7 @@ export default defineNuxtModule<ModuleOptions>({
     const { resolve } = createResolver(import.meta.url);
 
     // Inject the Nitro plugin for server-side logging
-    nuxt.hook("nitro:config", (nitroConfig) => {
+    nuxt.hook("nitro:config" as any, (nitroConfig: any) => {
       nitroConfig.plugins = nitroConfig.plugins ?? [];
       nitroConfig.plugins.push(resolve("./runtime/nitro-plugin"));
     });

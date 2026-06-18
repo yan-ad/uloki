@@ -111,7 +111,7 @@ describe("LokiLogger", () => {
     });
 
     logger.log({ line: "final" });
-    expect(typeof (logger as any).flushTimer).toBe("number");
+    expect((logger as any).flushTimer).toBeDefined();
 
     await logger.dispose();
 

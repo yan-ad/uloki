@@ -17,7 +17,7 @@ export interface LokiContext {
 /** Configuration options for @nitro-loki/nitro */
 export interface NitroLokiConfig {
   /** Loki push endpoint */
-  endpoint: string;
+  endpoint?: string;
   /** Default label set applied to every log entry */
   labels?: Record<string, string>;
   /** Enable/disable Loki logging (default: true) */
@@ -28,10 +28,4 @@ export interface NitroLokiConfig {
   flushInterval?: number;
   /** Redact patterns for sensitive fields */
   redact?: (string | RegExp)[];
-}
-
-declare module "nitro/types" {
-  interface NitroDevEvents {
-    "loki:log": (entry: LokiLogEntry) => void;
-  }
 }

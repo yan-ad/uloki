@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "type": "module",
   "description": "Nitro server plugin for Loki logging — hooks, runtime, config",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
     }
   },
@@ -27,6 +27,7 @@
   "devDependencies": {
     "nitro": "catalog:",
     "typescript": "catalog:",
+    "unbuild": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

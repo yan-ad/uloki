@@ -14,6 +14,7 @@
     "release": "bumpp && pnpm -r publish"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "bumpp": "^10.0.0",
     "typescript": "^5.7.0"
   },

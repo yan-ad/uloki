@@ -1,3 +1,4 @@
+// @ts-nocheck — runtime injected by Nuxt module, types only resolve in Nuxt context
 import { defineNitroPlugin } from "nitropack/runtime/plugin";
 import { useLokiRuntime } from "@nitro-loki/nitro/runtime";
 

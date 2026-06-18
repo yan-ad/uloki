@@ -1,5 +1,7 @@
 import type { NitroLokiConfig } from "./types";
 
+export { type NitroLokiConfig };
+
 /** Default configuration values */
 export const defaults: Required<NitroLokiConfig> = {
   endpoint: "http://localhost:3100/loki/api/v1/push",

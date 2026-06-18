@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "type": "module",
   "description": "Nuxt module for nitro-loki — drop-in Loki logging for your Nuxt server",
-  "main": "./dist/module.js",
+  "main": "./dist/module.cjs",
   "module": "./dist/module.mjs",
   "types": "./dist/module.d.ts",
   "exports": {
     ".": {
       "import": "./dist/module.mjs",
-      "require": "./dist/module.js",
+      "require": "./dist/module.cjs",
       "types": "./dist/module.d.ts"
     }
   },
@@ -30,6 +30,7 @@
     "@nuxt/schema": "catalog:",
     "nuxt": "catalog:",
     "typescript": "catalog:",
+    "unbuild": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

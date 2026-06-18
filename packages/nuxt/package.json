@@ -1,8 +1,8 @@
 {
-  "name": "@nitro-loki/nuxt",
+  "name": "@uloki/nuxt",
   "version": "0.0.1",
   "type": "module",
-  "description": "Nuxt module for nitro-loki — drop-in Loki logging for your Nuxt server",
+  "description": "Nuxt module for uloki — drop-in Loki logging for your Nuxt server",
   "main": "./dist/module.cjs",
   "module": "./dist/module.mjs",
   "types": "./dist/module.d.ts",
@@ -22,8 +22,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "nitro-loki": "workspace:*",
-    "@nitro-loki/nitro": "workspace:*"
+    "uloki": "workspace:*",
+    "@uloki/nitro": "workspace:*"
   },
   "devDependencies": {
     "@nuxt/kit": "catalog:",

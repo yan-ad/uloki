@@ -1,12 +1,12 @@
 // @ts-nocheck — types resolve only in Nuxt project context
 import { defineNuxtModule, createResolver } from "@nuxt/kit";
-import type { NitroLokiConfig } from "@nitro-loki/nitro";
+import type { NitroLokiConfig } from "@uloki/nitro";
 
 export interface ModuleOptions extends NitroLokiConfig {}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: "nitro-loki",
+    name: "uloki",
     configKey: "loki",
     compatibility: { nuxt: ">=3.12" },
   },

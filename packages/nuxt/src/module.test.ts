@@ -9,7 +9,7 @@ vi.mock("@nuxt/kit", () => ({
   createResolver: () => ({ resolve: (p: string) => `/resolved/${p}` }),
 }));
 
-describe("@nitro-loki/nuxt module", () => {
+describe("@uloki/nuxt module", () => {
   let mod: any;
 
   beforeAll(async () => {
@@ -22,7 +22,7 @@ describe("@nitro-loki/nuxt module", () => {
 
   it("has correct meta name and configKey", () => {
     const def = mod.default;
-    expect(def.meta.name).toBe("nitro-loki");
+    expect(def.meta.name).toBe("uloki");
     expect(def.meta.configKey).toBe("loki");
   });
 

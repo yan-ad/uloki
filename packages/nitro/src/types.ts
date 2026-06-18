@@ -1,4 +1,4 @@
-import type { LokiLogEntry } from "nitro-loki";
+import type { LokiLogEntry } from "uloki";
 
 /**
  * Metadata attached to every logging context by the Nitro plugin.
@@ -14,7 +14,7 @@ export interface LokiContext {
   flushInterval: number;
 }
 
-/** Configuration options for @nitro-loki/nitro */
+/** Configuration options for @uloki/nitro */
 export interface NitroLokiConfig {
   /** Loki push endpoint */
   endpoint?: string;

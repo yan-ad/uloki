@@ -1,5 +1,5 @@
 {
-  "name": "@nitro-loki/nitro",
+  "name": "@uloki/nitro",
   "version": "0.0.1",
   "type": "module",
   "description": "Nitro server plugin for Loki logging — hooks, runtime, config",
@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "nitro-loki": "workspace:*"
+    "uloki": "workspace:*"
   },
   "devDependencies": {
     "nitro": "catalog:",

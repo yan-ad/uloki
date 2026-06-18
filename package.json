@@ -1,5 +1,5 @@
 {
-  "name": "nitro-loki",
+  "name": "uloki",
   "version": "0.0.1",
   "private": true,
   "description": "Loki logging transport for Nitro — the server engine that powers Nuxt",

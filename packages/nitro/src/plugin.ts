@@ -10,32 +10,32 @@ export function nitroLokiPlugin(userConfig: NitroLokiConfig = {}) {
   const config = resolveConfig(userConfig);
 
   return {
-    name: "nitro-loki",
+    name: "uloki",
     config: config,
 
     async init(nitro: any) {
       nitro.options.alias = nitro.options.alias ?? {};
       // Expose resolved config as virtual module so runtime can import it
       nitro.options.virtual = nitro.options.virtual ?? {};
-      nitro.options.virtual["#nitro-loki-config"] = () =>
+      nitro.options.virtual["#uloki-config"] = () =>
         `export default ${JSON.stringify(config, null, 2)}`;
 
-      nitro.logger.info(`nitro-loki → ${config.endpoint}`);
+      nitro.logger.info(`uloki → ${config.endpoint}`);
     },
 
     // Inject runtime setup snippet into the server entry
     rollup: {
       plugins: [
         {
-          name: "nitro-loki:virtual-runtime",
+          name: "uloki:virtual-runtime",
           resolveId(id: string) {
-            if (id === "virtual:nitro-loki-runtime") return id;
+            if (id === "virtual:uloki-runtime") return id;
           },
           load(id: string) {
-            if (id === "virtual:nitro-loki-runtime") {
+            if (id === "virtual:uloki-runtime") {
               return `
-import { useLokiRuntime } from "@nitro-loki/nitro/runtime";
-import config from "#nitro-loki-config";
+import { useLokiRuntime } from "@uloki/nitro/runtime";
+import config from "#uloki-config";
 export default function (nitroApp) { useLokiRuntime(nitroApp, config); }
 `;
             }

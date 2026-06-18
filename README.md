@@ -1,10 +1,10 @@
-# nitro-loki
+# uloki
 
 > Loki logging transport for [Nitro](https://nitro.unjs.io) — the server engine that powers [Nuxt](https://nuxt.com).
 
 [![CI](https://github.com/yan-ad/nitro-loki/actions/workflows/test.yml/badge.svg)](https://github.com/yan-ad/nitro-loki/actions/workflows/test.yml)
-[![npm](https://img.shields.io/npm/v/nitro-loki)](https://www.npmjs.com/package/nitro-loki)
-[![license](https://img.shields.io/github/license/yan-ad/nitro-loki)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/uloki)](https://www.npmjs.com/package/uloki)
+[![license](https://img.shields.io/github/license/yan-ad/uloki)](./LICENSE)
 
 Ship structured logs from your Nitro/Nuxt server to [Grafana Loki](https://grafana.com/oss/loki/) with automatic batching, configurable redaction, and zero runtime overhead when disabled.
 
@@ -14,9 +14,9 @@ Ship structured logs from your Nitro/Nuxt server to [Grafana Loki](https://grafa
 
 | Package | npm | Description |
 |---|---|---|
-| [`nitro-loki`](./packages/core) | Core | Logger, transport, redaction, request helpers |
-| [`@nitro-loki/nitro`](./packages/nitro) | nitro | Nitro server plugin — hooks, runtime, config |
-| [`@nitro-loki/nuxt`](./packages/nuxt) | nuxt | Nuxt module — drop-in via `nuxt.config` |
+| [`uloki`](./packages/core) | Core | Logger, transport, redaction, request helpers |
+| [`@uloki/nitro`](./packages/nitro) | nitro | Nitro server plugin — hooks, runtime, config |
+| [`@uloki/nuxt`](./packages/nuxt) | nuxt | Nuxt module — drop-in via `nuxt.config` |
 
 ---
 
@@ -25,13 +25,13 @@ Ship structured logs from your Nitro/Nuxt server to [Grafana Loki](https://grafa
 ### Nuxt (recommended)
 
 ```bash
-pnpm add @nitro-loki/nuxt
+pnpm add @uloki/nuxt
 ```
 
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ["@nitro-loki/nuxt"],
+  modules: ["@uloki/nuxt"],
   loki: {
     endpoint: "http://localhost:3100",
     labels: { app: "my-app", env: "production" },
@@ -44,12 +44,12 @@ export default defineNuxtConfig({
 ### Nitro standalone
 
 ```bash
-pnpm add @nitro-loki/nitro
+pnpm add @uloki/nitro
 ```
 
 ```ts
 // nitro.config.ts
-import { nitroLokiPlugin } from "@nitro-loki/nitro";
+import { nitroLokiPlugin } from "@uloki/nitro";
 
 export default defineNitroConfig({
   plugins: [
@@ -64,11 +64,11 @@ export default defineNitroConfig({
 ### Core (programmatic)
 
 ```bash
-pnpm add nitro-loki
+pnpm add uloki
 ```
 
 ```ts
-import { LokiLogger } from "nitro-loki";
+import { LokiLogger } from "uloki";
 
 const logger = new LokiLogger({
   endpoint: "http://localhost:3100",
@@ -88,7 +88,7 @@ await logger.dispose();
 
 ## API
 
-### `nitro-loki`
+### `uloki`
 
 | Export | Description |
 |---|---|
@@ -100,7 +100,7 @@ await logger.dispose();
 | `fmtRequestLog(meta)` | Format HTTP request metadata as logfmt line |
 | `logRequest(logger, meta, labels?)` | Log an HTTP request with standard labels + log level |
 
-### `@nitro-loki/nitro`
+### `@uloki/nitro`
 
 | Export | Description |
 |---|---|
@@ -108,12 +108,12 @@ await logger.dispose();
 | `resolveConfig(config?)` | Merge user config with defaults |
 | `useLokiRuntime(nitroApp, config)` | Wire Loki logger into Nitro hooks (`request`, `close`, `loki:log`) |
 
-### `@nitro-loki/nuxt`
+### `@uloki/nuxt`
 
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ["@nitro-loki/nuxt"],
+  modules: ["@uloki/nuxt"],
   loki: {
     endpoint: string        // Loki push endpoint (default: http://localhost:3100/loki/api/v1/push)
     enabled?: boolean       // Enable logging (default: true)
@@ -180,7 +180,7 @@ Labels include `method`, `status`, and `level` (`info` / `warn` / `error`) for e
 ```bash
 # Clone
 git clone https://github.com/yan-ad/nitro-loki.git
-cd nitro-loki
+cd uloki
 
 # Install
 pnpm install

@@ -6,6 +6,10 @@ const withMDX = createMDX()
 const config: NextConfig = {
   reactStrictMode: true,
 
+  turbopack: {
+    root: __dirname
+  },
+
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: []

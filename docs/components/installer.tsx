@@ -1,6 +1,5 @@
 'use client'
 
-import { useOpenPanel } from '@openpanel/nextjs'
 import { IconCheck, IconCopy } from '@tabler/icons-react'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -19,7 +18,6 @@ interface InstallerProps {
 }
 
 export const Installer = ({ code }: InstallerProps) => {
-  const { track } = useOpenPanel()
   const [copied, setCopied] = useState(false)
   const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -36,7 +34,6 @@ export const Installer = ({ code }: InstallerProps) => {
     try {
       await navigator.clipboard.writeText(code)
       toast.success('Copied to clipboard')
-      track('copy_to_clipboard', { code, name: 'installer' })
       setCopied(true)
 
       if (copyResetTimeoutRef.current !== null) {

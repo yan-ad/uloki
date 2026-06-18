@@ -1,0 +1,109 @@
+---
+title: Elysia
+description: @uloki/elysia — drop-in Loki logging plugin for Elysia
+---
+
+Add Loki logging to your [Elysia](https://elysiajs.com) server with a single `.use()` call.
+
+## Installation
+
+```bash
+pnpm add @uloki/elysia
+```
+
+## Quick Start
+
+```ts
+import { Elysia } from "elysia";
+import { uloki } from "@uloki/elysia";
+
+const app = new Elysia()
+  .use(uloki({
+    endpoint: "http://localhost:3100",
+    labels: { app: "my-api" },
+  }))
+  .get("/", () => "ok")
+  .listen(3000);
+```
+
+## How It Works
+
+The plugin hooks into Elysia's lifecycle:
+
+1. **`onRequest`** — Captures request start time
+2. **`onAfterResponse`** — Logs method, path, status, duration with auto-derived log level
+3. **`onStop`** — Flushes remaining entries on server shutdown
+
+## Configuration
+
+```ts
+uloki({
+  endpoint: "http://localhost:3100",          // Loki push endpoint
+  labels: { app: "my-api" },                  // Default labels
+  enabled: true,                              // Enable/disable
+  batchSize: 10,                              // Entries per batch
+  flushInterval: 5000,                        // Auto-flush interval (ms)
+  redact: ["token", "password"],             // Redaction patterns
+  requestLogging: true,                       // Auto-capture HTTP requests (default: true)
+})
+```
+
+### `requestLogging`
+
+When `true` (default), every HTTP request is automatically logged with structured metadata:
+
+```logfmt
+method=GET path=/api/users status=200 duration_ms=12
+```
+
+Set to `false` if you only want manual logging.
+
+## Manual Logging
+
+Access the logger via `store.loki` in any route handler:
+
+```ts
+app.get("/users/:id", ({ store, params }) => {
+  store.loki.log({
+    line: `User ${params.id} accessed`,
+    labels: { action: "view_profile" },
+  });
+
+  return { id: params.id };
+});
+
+// Flush manually if needed
+await store.loki.flush();
+```
+
+## Complete Example
+
+```ts
+import { Elysia } from "elysia";
+import { uloki } from "@uloki/elysia";
+
+const app = new Elysia()
+  .use(uloki({
+    endpoint: "http://loki:3100",
+    labels: { app: "my-service", env: "production" },
+    batchSize: 20,
+    flushInterval: 10000,
+    redact: ["token", "secret", /Bearer\s+\S+/g],
+  }))
+  .get("/health", () => ({ status: "ok" }))
+  .get("/users/:id", ({ store, params }) => {
+    store.loki.log({
+      line: `Fetching user ${params.id}`,
+      labels: { action: "get_user" },
+    });
+    return { id: params.id };
+  })
+  .listen(3000);
+
+console.log(`Server running at ${app.server?.url}`);
+```
+
+## Requirements
+
+- **Elysia** >= 1.0
+- **Node.js** >= 22 (or Bun)

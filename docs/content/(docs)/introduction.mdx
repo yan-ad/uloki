@@ -1,0 +1,48 @@
+---
+title: Introduction
+description: uloki — Loki logging transport for Nitro, Nuxt, and Elysia
+---
+
+**uloki** is a Loki logging transport for modern JavaScript server frameworks. Ship structured logs from your [Nitro](https://nitro.unjs.io), [Nuxt](https://nuxt.com), or [Elysia](https://elysiajs.com) server to [Grafana Loki](https://grafana.com/oss/loki/) with automatic batching, configurable redaction, and zero runtime overhead when disabled.
+
+The name comes from **ulo** (Javanese for snake 🐍) + **loki** (Grafana Loki).
+
+## Features
+
+- **Auto-batching** — Buffers log entries and flushes in configurable batches
+- **Redaction** — Built-in sensitive field detection + custom regex rules
+- **Request logging** — Automatic HTTP request metadata capture in logfmt format
+- **Multi-framework** — Drop-in plugins for Nitro, Nuxt, and Elysia
+- **Type-safe** — Full TypeScript support with exported types
+- **Zero-overhead disabled** — No HTTP calls when `enabled: false`
+
+## Packages
+
+| Package | Description |
+|---|---|
+| [`uloki`](/core/logger) | Core — logger, transport, redaction, request helpers |
+| [`@uloki/nitro`](/integrations/nitro) | Nitro server plugin |
+| [`@uloki/nuxt`](/integrations/nuxt) | Nuxt module |
+| [`@uloki/elysia`](/integrations/elysia) | Elysia plugin |
+
+## Quick Start
+
+```bash
+# Core (programmatic)
+pnpm add uloki
+
+# Elysia
+pnpm add @uloki/elysia
+
+# Nitro
+pnpm add @uloki/nitro
+
+# Nuxt
+pnpm add @uloki/nuxt
+```
+
+## Next Steps
+
+- [Installation guide](/installation)
+- [Configuration reference](/configuration)
+- [Core API](/core/logger)

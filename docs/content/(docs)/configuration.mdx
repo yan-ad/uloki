@@ -1,0 +1,152 @@
+---
+title: Configuration
+description: Complete configuration reference for uloki
+---
+
+All packages share the same configuration shape.
+
+## Config Interface
+
+```ts
+interface LokiConfig {
+  /** Loki push endpoint (default: http://localhost:3100/loki/api/v1/push) */
+  endpoint?: string;
+  /** Default labels applied to every log entry */
+  labels?: Record<string, string>;
+  /** Enable/disable Loki logging (default: true) */
+  enabled?: boolean;
+  /** Max entries before auto-flush (default: 10) */
+  batchSize?: number;
+  /** Max ms between flushes (default: 5000) */
+  flushInterval?: number;
+  /** Patterns to redact from log lines */
+  redact?: (string | RegExp)[];
+}
+```
+
+## Options
+
+### `endpoint`
+
+Loki push API endpoint. Must point to `/loki/api/v1/push`.
+
+- **Type:** `string`
+- **Default:** `http://localhost:3100/loki/api/v1/push`
+
+```ts
+endpoint: "https://loki.example.com/loki/api/v1/push"
+```
+
+### `labels`
+
+Default label set applied to every log entry. Use these for filtering in Grafana.
+
+- **Type:** `Record<string, string>`
+- **Default:** `{}`
+
+```ts
+labels: {
+  app: "my-api",
+  env: "production",
+  version: "1.0.0"
+}
+```
+
+### `enabled`
+
+Toggle Loki logging on/off. When `false`, no HTTP calls are made.
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+```ts
+enabled: false  // Disable in dev
+```
+
+### `batchSize`
+
+Number of log entries to buffer before flushing to Loki.
+
+- **Type:** `number`
+- **Default:** `10`
+
+```ts
+batchSize: 50  // Flush every 50 entries
+```
+
+### `flushInterval`
+
+Maximum time (in ms) between automatic flushes. Set to `0` to disable auto-flush.
+
+- **Type:** `number`
+- **Default:** `5000`
+
+```ts
+flushInterval: 10000  // Flush every 10 seconds
+```
+
+### `redact`
+
+Patterns to strip from log lines before shipping. See [Redaction](/core/redaction) for details.
+
+- **Type:** `(string | RegExp)[]`
+- **Default:** `[]`
+
+```ts
+redact: [
+  "token",
+  "password",
+  /Bearer\s+\S+/g,
+]
+```
+
+## Per-Framework Config
+
+### Elysia
+
+```ts
+import { uloki } from "@uloki/elysia";
+
+new Elysia()
+  .use(uloki({
+    endpoint: "http://localhost:3100",
+    labels: { app: "my-elysia" },
+    batchSize: 20,
+    flushInterval: 10000,
+    requestLogging: true,   // Elysia-specific: auto-capture HTTP requests
+    redact: ["token"],
+  }))
+  .listen(3000);
+```
+
+### Nitro
+
+```ts
+import { nitroLokiPlugin } from "@uloki/nitro";
+
+export default defineNitroConfig({
+  plugins: [
+    nitroLokiPlugin({
+      endpoint: "http://loki:3100",
+      labels: { app: "my-api" },
+      batchSize: 10,
+      flushInterval: 5000,
+    }),
+  ],
+});
+```
+
+### Nuxt
+
+```ts
+export default defineNuxtConfig({
+  modules: ["@uloki/nuxt"],
+  loki: {
+    endpoint: "http://loki:3100",
+    labels: { app: "my-app", env: "production" },
+    batchSize: 10,
+    flushInterval: 5000,
+    redact: ["token", "secret"],
+  },
+});
+```

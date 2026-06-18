@@ -1,0 +1,75 @@
+---
+title: Nitro
+description: @uloki/nitro — Loki logging plugin for Nitro server
+---
+
+Drop-in Loki logging for [Nitro](https://nitro.unjs.io) — the server engine that powers Nuxt.
+
+## Installation
+
+```bash
+pnpm add @uloki/nitro
+```
+
+## Setup
+
+Add the plugin to your `nitro.config.ts`:
+
+```ts
+// nitro.config.ts
+import { nitroLokiPlugin } from "@uloki/nitro";
+
+export default defineNitroConfig({
+  plugins: [
+    nitroLokiPlugin({
+      endpoint: "http://localhost:3100",
+      labels: { app: "my-api", env: "production" },
+      batchSize: 10,
+      flushInterval: 5000,
+    }),
+  ],
+});
+```
+
+## How It Works
+
+The plugin hooks into Nitro's build and runtime lifecycle:
+
+1. **Build time** — Injects a virtual runtime module and configuration
+2. **Request hook** — Creates a `LokiLogger` per request context
+3. **Close hook** — Flushes remaining entries on shutdown
+4. **Dev mode** — Emits `loki:log` events for playground introspection
+
+## Runtime API
+
+```ts
+// Available in request context
+event.context.loki.log({ line: "Custom log", labels: { level: "info" } });
+await event.context.loki.flush();
+```
+
+## Configuration
+
+All [standard configuration options](/configuration) are supported:
+
+```ts
+nitroLokiPlugin({
+  endpoint: "http://loki:3100",          // Loki push endpoint
+  labels: { app: "my-api" },             // Default labels
+  enabled: true,                         // Enable/disable
+  batchSize: 10,                         // Entries per batch
+  flushInterval: 5000,                   // Auto-flush interval (ms)
+  redact: ["token", /Bearer\s+\S+/g],   // Redaction patterns
+})
+```
+
+## Request Logging
+
+HTTP requests are automatically logged with:
+
+- `method`, `path`, `status`, `duration_ms`
+- Labels: `method`, `status`, `level` (info/warn/error)
+
+```logfmt
+method=GET path=/api/users status=200 duration_ms=12
+```

@@ -1,0 +1,11 @@
+{
+  "title": "Core",
+  "description": "Core primitives for Loki logging",
+  "pages": [
+    "logger",
+    "transport",
+    "redaction",
+    "request-logging"
+  ],
+  "root": true
+}

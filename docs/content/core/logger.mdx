@@ -1,0 +1,95 @@
+---
+title: Logger
+description: LokiLogger — high-level logger with batching, redaction, and auto-flush
+---
+
+The `LokiLogger` is the recommended entry point for most use cases. It wraps `LokiTransport` with automatic batching, configurable redaction, and background flushing.
+
+## Basic Usage
+
+```ts
+import { LokiLogger } from "uloki";
+
+const logger = new LokiLogger({
+  endpoint: "http://localhost:3100",
+  labels: { service: "worker", env: "production" },
+  batchSize: 10,
+  flushInterval: 5000,
+});
+
+logger.log({ line: "Job started", labels: { level: "info" } });
+logger.log({ line: "Job completed", labels: { level: "info" } });
+
+// Graceful shutdown
+await logger.dispose();
+```
+
+## How Batching Works
+
+Entries are buffered in memory and flushed to Loki when either:
+
+1. **Batch size** is reached (`batchSize` entries buffered)
+2. **Flush interval** elapses (`flushInterval` ms since last flush)
+3. **`flush()` is called manually**
+4. **`dispose()` is called** (stops interval + final flush)
+
+```ts
+const logger = new LokiLogger({
+  batchSize: 50,      // Flush every 50 entries
+  flushInterval: 10000, // Or every 10 seconds
+});
+
+// Buffered — will flush when 50 entries or 10s passes
+for (let i = 0; i < 100; i++) {
+  logger.log({ line: `Event ${i}` });
+}
+```
+
+## Authentication
+
+Basic auth via `username`/`password` or custom headers:
+
+```ts
+const logger = new LokiLogger({
+  endpoint: "https://loki.example.com",
+  username: "admin",
+  password: "secret",
+});
+
+// Or custom headers
+const logger = new LokiLogger({
+  endpoint: "https://loki.example.com",
+  headers: {
+    "X-Scope-OrgID": "tenant-1",
+  },
+});
+```
+
+## Flush Callback
+
+Register a callback for dev introspection:
+
+```ts
+const logger = new LokiLogger({
+  endpoint: "http://localhost:3100",
+  onFlush: (entries) => {
+    console.log(`Flushed ${entries.length} entries`);
+  },
+});
+
+// Or later
+logger.onFlush((entries) => {
+  console.log(`Flushed ${entries.length} entries`);
+});
+```
+
+## Disabling
+
+When `enabled: false`, `log()` is a no-op — no memory allocations, no HTTP calls.
+
+```ts
+const logger = new LokiLogger({
+  endpoint: "http://localhost:3100",
+  enabled: process.env.NODE_ENV !== "test",
+});
+```

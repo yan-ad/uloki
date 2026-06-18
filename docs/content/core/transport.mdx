@@ -1,0 +1,81 @@
+---
+title: Transport
+description: LokiTransport — low-level HTTP transport to Loki push API
+---
+
+`LokiTransport` is the low-level HTTP client that pushes log batches to [Loki's push API](https://grafana.com/docs/loki/latest/api/#push-log-entries-to-loki). Use it directly when you need fine-grained control over push behavior.
+
+## Basic Usage
+
+```ts
+import { LokiTransport } from "uloki";
+
+const transport = new LokiTransport({
+  endpoint: "http://localhost:3100",
+  labels: { app: "my-service" },
+});
+
+const result = await transport.push([
+  { ts: "1719000000000000000", line: "Request processed" },
+  { ts: "1719000001000000000", line: "Response sent" },
+]);
+
+if (!result.ok) {
+  console.error(`Push failed: ${result.error} (status ${result.status})`);
+}
+```
+
+## Timestamp Format
+
+Timestamps must be **nanoseconds since Unix epoch** as strings:
+
+```ts
+// Current time in nanoseconds
+const nowNs = String(Date.now() * 1_000_000);
+
+// From a Date object
+const dateNs = String(someDate.getTime() * 1_000_000);
+
+await transport.push([
+  { ts: nowNs, line: "Hello" },
+]);
+```
+
+## Error Handling
+
+`push()` never throws. Always check the return value:
+
+```ts
+const result = await transport.push(entries);
+
+if (!result.ok) {
+  // result.status — HTTP status code (if available)
+  // result.error — error message or response body
+}
+```
+
+## Authentication
+
+```ts
+// Basic auth
+new LokiTransport({
+  endpoint: "https://loki.example.com",
+  username: "admin",
+  password: "${LOKI_PASSWORD}",
+});
+
+// Custom headers
+new LokiTransport({
+  endpoint: "https://loki.example.com",
+  headers: {
+    "X-Scope-OrgID": "tenant-1",
+  },
+});
+```
+
+## Internal Details
+
+- Trailing slash on `endpoint` is automatically stripped
+- Pushes go to `{endpoint}/loki/api/v1/push`
+- Request body is JSON wrapped in Loki's streams format
+- Uses `fetch()` — works in Node 22+ and Bun

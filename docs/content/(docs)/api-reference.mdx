@@ -1,0 +1,129 @@
+---
+title: API Reference
+description: Complete API reference for uloki core and integrations
+---
+
+## `uloki` (core)
+
+### `LokiLogger`
+
+High-level logger that buffers, redacts, batches, and flushes to Loki.
+
+```ts
+import { LokiLogger } from "uloki";
+
+const logger = new LokiLogger({
+  endpoint: "http://localhost:3100",
+  labels: { service: "worker" },
+  flushInterval: 5000,
+  redact: ["token", /Bearer\s+\S+/g],
+});
+
+logger.log({ line: "Worker started", labels: { level: "info" } });
+await logger.dispose();
+```
+
+**Constructor options:**
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `endpoint` | `string` | — | Loki push endpoint |
+| `labels` | `Record<string, string>` | `{}` | Default labels |
+| `enabled` | `boolean` | `true` | Enable/disable |
+| `batchSize` | `number` | `10` | Entries per batch |
+| `flushInterval` | `number` | `5000` | Auto-flush interval (ms) |
+| `redact` | `(string \| RegExp)[]` | `[]` | Redaction rules |
+| `username` | `string` | — | Basic auth username |
+| `password` | `string` | — | Basic auth password |
+| `headers` | `Record<string, string>` | `{}` | Custom fetch headers |
+| `onFlush` | `(entries) => void` | — | Callback on flush |
+
+**Methods:**
+
+- `log(entry)` — Buffer a log entry. Auto-flushes when `batchSize` is reached.
+- `flush()` — Flush all buffered entries to Loki immediately.
+- `onFlush(cb)` — Register a flush callback.
+- `dispose()` — Stop auto-flush and flush remaining.
+
+### `LokiTransport`
+
+Low-level HTTP transport to Loki's `/loki/api/v1/push`.
+
+```ts
+import { LokiTransport } from "uloki";
+
+const transport = new LokiTransport({
+  endpoint: "http://localhost:3100",
+  labels: { app: "my-app" },
+  username: "admin",
+  password: "secret",
+});
+
+const result = await transport.push([
+  { ts: "1719000000000000000", line: "Hello Loki" },
+]);
+```
+
+### `fmtRequestLog(meta)`
+
+Format HTTP request metadata as a logfmt line.
+
+```ts
+import { fmtRequestLog } from "uloki";
+
+const line = fmtRequestLog({
+  method: "GET",
+  path: "/api/users",
+  status: 200,
+  durationMs: 12,
+  userAgent: "Mozilla/5.0",
+});
+// => "method=GET path=/api/users status=200 duration_ms=12 ua=\"Mozilla/5.0\""
+```
+
+### `logRequest(logger, meta, labels?)`
+
+Log an HTTP request with standard labels and log level.
+
+```ts
+import { logRequest, LokiLogger } from "uloki";
+
+const logger = new LokiLogger({ endpoint: "http://localhost:3100" });
+logRequest(logger, { method: "GET", path: "/", status: 200, durationMs: 5 });
+```
+
+## `@uloki/nitro`
+
+### `nitroLokiPlugin(config?)`
+
+Nitro build plugin. Injects the Loki runtime into the server bundle.
+
+### `resolveConfig(config?)`
+
+Merge user config with defaults.
+
+### `useLokiRuntime(nitroApp, config)`
+
+Wire Loki logger into Nitro hooks (`request`, `close`, `loki:log`).
+
+## `@uloki/nuxt`
+
+Nuxt module registered via `modules: ["@uloki/nuxt"]` in `nuxt.config.ts`.
+
+Config key: `loki`
+
+## `@uloki/elysia`
+
+### `uloki(config?)`
+
+Elysia plugin. Returns an Elysia instance with Loki logging.
+
+```ts
+import { uloki } from "@uloki/elysia";
+
+new Elysia()
+  .use(uloki({ endpoint: "http://localhost:3100" }))
+  .listen(3000);
+```
+
+The plugin exposes `store.loki` with `.log()` and `.flush()` for manual logging.

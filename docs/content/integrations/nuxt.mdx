@@ -1,0 +1,83 @@
+---
+title: Nuxt
+description: @uloki/nuxt — drop-in Loki logging for your Nuxt server
+---
+
+One-line setup for Loki logging in your [Nuxt](https://nuxt.com) application.
+
+## Installation
+
+```bash
+pnpm add @uloki/nuxt
+```
+
+## Setup
+
+Add the module to `nuxt.config.ts`:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ["@uloki/nuxt"],
+  loki: {
+    endpoint: "http://localhost:3100",
+    labels: { app: "my-app", env: "production" },
+    batchSize: 10,
+    flushInterval: 5000,
+  },
+});
+```
+
+## How It Works
+
+The Nuxt module:
+
+1. Registers as a Nuxt module (`configKey: "loki"`)
+2. Injects the `@uloki/nitro` plugin into the Nitro build
+3. Passes config via `runtimeConfig.public.loki`
+4. Auto-captures HTTP request metadata
+
+## Configuration
+
+All [standard configuration options](/configuration) are supported via `loki` key in `nuxt.config.ts`:
+
+```ts
+export default defineNuxtConfig({
+  modules: ["@uloki/nuxt"],
+  loki: {
+    endpoint: string         // Loki push endpoint
+    enabled?: boolean        // Enable logging (default: true)
+    labels?: Record<string, string>  // Default labels
+    batchSize?: number       // Entries per batch (default: 10)
+    flushInterval?: number   // Max ms between flushes (default: 5000)
+    redact?: (string | RegExp)[]    // Redaction patterns
+  },
+});
+```
+
+## Environment-specific config
+
+Use Nuxt's runtime config for per-environment settings:
+
+```ts
+export default defineNuxtConfig({
+  modules: ["@uloki/nuxt"],
+  runtimeConfig: {
+    public: {
+      loki: {
+        endpoint: process.env.LOKI_ENDPOINT ?? "http://localhost:3100",
+        enabled: process.env.NODE_ENV !== "development",
+      },
+    },
+  },
+});
+```
+
+## Request Logging
+
+Requests are automatically logged with method, path, status, and duration — same as the [Nitro integration](/integrations/nitro).
+
+## Requirements
+
+- **Nuxt** >= 3.12
+- **Node.js** >= 22

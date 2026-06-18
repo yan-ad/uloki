@@ -1,0 +1,89 @@
+---
+title: Redaction
+description: Strip sensitive data from log entries before shipping to Loki
+---
+
+uloki provides a flexible redaction system that strips sensitive data from log lines before they leave your server.
+
+## Built-in Sensitive Keys
+
+The following field names are automatically redacted when using `redactSensitiveKeys()`:
+
+`password`, `passwd`, `secret`, `token`, `authorization`, `cookie`, `apiKey`, `api_key`, `accessToken`, `access_token`, `refreshToken`, `refresh_token`, `privateKey`, `private_key`
+
+## Custom Redaction Rules
+
+Pass an array of strings (field names) and/or RegExp patterns:
+
+```ts
+const logger = new LokiLogger({
+  endpoint: "http://localhost:3100",
+  redact: [
+    "credit_card",          // Field name
+    "ssn",                   // Field name
+    /Bearer\s+\S+/g,         // Regex pattern
+    /x-api-key:\s*\S+/gi,    // Case-insensitive regex
+  ],
+});
+```
+
+## How It Works
+
+### String rules
+
+String rules match key=value or "key":"value" patterns:
+
+```
+Input:  "authorization=Bearer abc123"
+Rule:   "authorization"
+Output: "authorization=[REDACTED]"
+```
+
+### RegExp rules
+
+RegExp rules are applied directly to the log line:
+
+```
+Input:  "GET /api/users HTTP/1.1 Authorization: Bearer abc123"
+Rule:   /Bearer\s+\S+/g
+Output: "GET /api/users HTTP/1.1 Authorization: [REDACTED]"
+```
+
+## API
+
+### `compileRedactRules(rules)`
+
+Compile user-provided rules into regex patterns.
+
+```ts
+import { compileRedactRules } from "uloki";
+
+const { patterns } = compileRedactRules(["token", /Bearer\s+\S+/g]);
+// patterns: RegExp[]
+```
+
+### `redactLine(line, patterns)`
+
+Apply regex patterns to a log line.
+
+```ts
+import { redactLine } from "uloki";
+
+const clean = redactLine(
+  "token=abc123 user=john",
+  compileRedactRules(["token"]).patterns
+);
+// => "token=[REDACTED] user=john"
+```
+
+### `redactSensitiveKeys(obj)`
+
+Deep-clone an object, replacing sensitive keys with `[REDACTED]`.
+
+```ts
+import { redactSensitiveKeys } from "uloki";
+
+const obj = { user: "john", password: "secret", meta: { token: "abc" } };
+const safe = redactSensitiveKeys(obj);
+// => { user: "john", password: "[REDACTED]", meta: { token: "[REDACTED]" } }
+```

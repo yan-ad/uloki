@@ -1,0 +1,77 @@
+---
+title: Installation
+description: Install uloki and its framework integrations
+---
+
+## Core
+
+```bash
+pnpm add uloki
+```
+
+Or with npm/yarn:
+
+```bash
+npm install uloki
+yarn add uloki
+bun add uloki
+```
+
+## Framework Integrations
+
+### Elysia
+
+```bash
+pnpm add @uloki/elysia
+```
+
+```ts
+import { Elysia } from "elysia";
+import { uloki } from "@uloki/elysia";
+
+const app = new Elysia()
+  .use(uloki({ endpoint: "http://localhost:3100" }))
+  .get("/", () => "ok")
+  .listen(3000);
+```
+
+### Nitro
+
+```bash
+pnpm add @uloki/nitro
+```
+
+```ts
+import { nitroLokiPlugin } from "@uloki/nitro";
+
+export default defineNitroConfig({
+  plugins: [
+    nitroLokiPlugin({
+      endpoint: "http://localhost:3100",
+      labels: { app: "my-api" },
+    }),
+  ],
+});
+```
+
+### Nuxt
+
+```bash
+pnpm add @uloki/nuxt
+```
+
+```ts
+export default defineNuxtConfig({
+  modules: ["@uloki/nuxt"],
+  loki: {
+    endpoint: "http://localhost:3100",
+    labels: { app: "my-app" },
+  },
+});
+```
+
+## Requirements
+
+- **Node.js** >= 22
+- **Grafana Loki** instance (local or remote)
+- Framework of your choice: Nitro >= 3.0, Nuxt >= 3.12, Elysia >= 1.0

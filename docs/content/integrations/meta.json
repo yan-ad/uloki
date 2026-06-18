@@ -1,0 +1,6 @@
+{
+  "title": "Integrations",
+  "description": "Framework integrations for uloki",
+  "pages": ["nitro", "nuxt", "elysia"],
+  "root": true
+}

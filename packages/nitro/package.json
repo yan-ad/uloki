@@ -1,8 +1,8 @@
 {
-  "name": "@nitro-loki/core",
+  "name": "@nitro-loki/nitro",
   "version": "0.0.1",
   "type": "module",
-  "description": "Core Loki logging primitives — logger, transport, redaction, batching",
+  "description": "Nitro server plugin for Loki logging — hooks, runtime, config",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -30,6 +30,6 @@
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "nitro": ">=2.10"
+    "nitro": ">=3.0"
   }
 }

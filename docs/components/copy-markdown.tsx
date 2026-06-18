@@ -1,6 +1,5 @@
 'use client'
 
-import { useOpenPanel } from '@openpanel/nextjs'
 import { IconCheck, IconCopy } from '@tabler/icons-react'
 import { useCopyButton } from 'fumadocs-ui/utils/use-copy-button'
 import { Button } from './ui/button'
@@ -10,13 +9,8 @@ interface CopyMarkdownProps {
 }
 
 export const CopyMarkdown = ({ markdown }: CopyMarkdownProps) => {
-  const { track } = useOpenPanel()
 
   const [checked, onClick] = useCopyButton(() => {
-    track('copy_to_clipboard', {
-      markdown,
-      name: 'copy-markdown'
-    })
     navigator.clipboard.writeText(markdown)
   })
 

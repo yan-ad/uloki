@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Checkbox as CheckboxPrimitive } from "radix-ui"
+import { Checkbox as CheckboxPrimitive } from "@/lib/radix-ui"
 
 import { cn } from "@/lib/utils"
 import { IconCheck } from "@tabler/icons-react"

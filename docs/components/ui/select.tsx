@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Select as SelectPrimitive } from "radix-ui"
+import { Select as SelectPrimitive } from "@/lib/radix-ui"
 
 import { cn } from "@/lib/utils"
 import { IconSelector, IconCheck, IconChevronUp, IconChevronDown } from "@tabler/icons-react"
